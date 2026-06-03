@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}PromptForge — AI Prompt Generator{% endblock %}</title>
+
+  <!-- Google Fonts: Syne (display) + DM Mono (code/accent) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'generator/css/style.css' %}" />
+</head>
+<body>
+
+  <!-- ── Ambient background grid ── -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="{% url 'generator:index' %}" class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Prompt<strong>Forge</strong></span>
+      </a>
+      <nav class="site-nav">
+        <a href="{% url 'generator:index' %}" class="nav-link {% block nav_home %}{% endblock %}">Generate</a>
+        <a href="{% url 'generator:history' %}" class="nav-link {% block nav_history %}{% endblock %}">History</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Main content ── -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <p>PromptForge &mdash; ML-powered prompt generation &bull; Built with Django &amp; scikit-learn</p>
+  </footer>
+
+  {% load static %}
+  <script src="{% static 'generator/js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

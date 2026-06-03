@@ -1,0 +1,190 @@
+{% extends "generator/base.html" %}
+{% load static %}
+
+{% block title %}PromptForge — Generate Optimized AI Prompts{% endblock %}
+{% block nav_home %}active{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     HERO SECTION
+══════════════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-tag">
+    <span class="dot"></span> ML-Powered · Real-time Classification
+  </div>
+  <h1 class="hero-title">
+    Turn any idea into a<br/>
+    <em>perfect AI prompt</em>
+  </h1>
+  <p class="hero-sub">
+    Our machine learning engine classifies your intent, detects tone,
+    and crafts an optimised prompt—ready to paste into any AI tool.
+  </p>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     INPUT FORM
+══════════════════════════════════════════════════════════════════════ -->
+<section class="form-section">
+  <div class="card form-card">
+    <div class="card-header">
+      <h2>What do you need help with?</h2>
+      <span class="char-counter" id="char-counter">0 / 1000</span>
+    </div>
+
+    <form method="post" action="" id="prompt-form" novalidate>
+      {% csrf_token %}
+
+      <!-- Textarea -->
+      <div class="field-wrap {% if form.input_text.errors %}has-error{% endif %}">
+        {{ form.input_text }}
+        {% if form.input_text.errors %}
+          <p class="field-error">{{ form.input_text.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Category hint pills -->
+      <div class="hint-pills">
+        <span class="pill-label">Try:</span>
+        <button type="button" class="hint-pill" data-hint="Write a short story about a robot discovering emotions">✍️ Creative</button>
+        <button type="button" class="hint-pill" data-hint="Explain how neural networks work to a complete beginner">📚 Educational</button>
+        <button type="button" class="hint-pill" data-hint="Help me write a pitch deck for my SaaS startup">💼 Business</button>
+        <button type="button" class="hint-pill" data-hint="Fix my Python async function that keeps raising a RuntimeError">⚙️ Technical</button>
+        <button type="button" class="hint-pill" data-hint="Analyze the pros and cons of remote work culture">📊 Analytical</button>
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="btn-generate" id="submit-btn">
+        <span class="btn-label">Generate Prompt</span>
+        <span class="btn-icon">→</span>
+        <span class="btn-loading" hidden>
+          <span class="spinner"></span> Classifying…
+        </span>
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     ERROR BANNER
+══════════════════════════════════════════════════════════════════════ -->
+{% if error %}
+<section class="error-section">
+  <div class="error-banner">
+    <span class="error-icon">⚠️</span>
+    <span>{{ error }}</span>
+  </div>
+</section>
+{% endif %}
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     RESULT DISPLAY
+══════════════════════════════════════════════════════════════════════ -->
+{% if result %}
+<section class="result-section" id="result-section">
+
+  <!-- Classification summary strip -->
+  <div class="meta-strip">
+    <div class="meta-item">
+      <span class="meta-label">Category</span>
+      <span class="meta-value badge badge--{{ result.category }}">{{ result.category|title }}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Tone</span>
+      <span class="meta-value badge badge--tone">{{ result.tone|title }}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Confidence</span>
+      <span class="meta-value confidence-val">{{ result.confidence }}</span>
+    </div>
+  </div>
+
+  <!-- Confidence bars for all categories -->
+  <div class="card proba-card">
+    <h3 class="card-title">Classification Breakdown</h3>
+    <div class="proba-bars">
+      {% for cat, prob in result.all_proba.items %}
+      <div class="proba-row">
+        <span class="proba-label">{{ cat|title }}</span>
+        <div class="proba-bar-track">
+          <div class="proba-bar-fill {% if cat == result.category %}proba-bar--active{% endif %}"
+               style="width: {{ prob|floatformat:0 }}%"
+               data-width="{{ prob|floatformat:4 }}">
+          </div>
+        </div>
+        <span class="proba-pct">{{ prob|floatformat:1 }}%</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Generated Prompt card -->
+  <div class="card prompt-card">
+    <div class="prompt-card-header">
+      <h3 class="card-title">✨ Generated Prompt</h3>
+      <button class="btn-copy" id="copy-btn" data-target="prompt-text">
+        <span class="copy-label">Copy</span>
+        <span class="copy-icon">⎘</span>
+      </button>
+    </div>
+    <div class="prompt-body" id="prompt-text">{{ result.prompt }}</div>
+  </div>
+
+  <!-- Feedback -->
+  <div class="card feedback-card">
+    <h3 class="card-title">How was this prompt?</h3>
+    <div class="star-row" id="star-row">
+      {% for i in "12345" %}
+      <button class="star-btn" data-rating="{{ i }}" aria-label="Rate {{ i }} stars">★</button>
+      {% endfor %}
+    </div>
+    <form id="feedback-form" method="post"
+          action="{% url 'generator:submit_feedback' result.prompt_id %}"
+          style="display:none;">
+      {% csrf_token %}
+      {{ result.feedback_form.rating }}
+      <div class="field-wrap">
+        {{ result.feedback_form.comment }}
+      </div>
+      <button type="submit" class="btn-secondary">Submit Feedback</button>
+    </form>
+    <p class="feedback-thanks" id="feedback-thanks" hidden>
+      🙏 Thanks for your feedback! It helps us improve.
+    </p>
+  </div>
+
+</section>
+{% endif %}
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     FEATURE CALLOUTS  (shown when no result)
+══════════════════════════════════════════════════════════════════════ -->
+{% if not result %}
+<section class="features-section">
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <h3>ML Classification</h3>
+      <p>Logistic Regression trained on 120+ samples across 6 categories detects your intent with high accuracy.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>Tone Detection</h3>
+      <p>Rule-based NLP detects 8 distinct tones—formal, casual, technical, persuasive, and more.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Instant Results</h3>
+      <p>From raw idea to polished AI-ready prompt in under a second. No APIs, no delays.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💾</div>
+      <h3>History & Feedback</h3>
+      <p>Every prompt is saved to SQLite. Rate results to drive continuous improvement.</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

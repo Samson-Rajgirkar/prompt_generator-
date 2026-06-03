@@ -1,0 +1,79 @@
+{% extends "generator/base.html" %}
+{% load static %}
+
+{% block title %}History — PromptForge{% endblock %}
+{% block nav_history %}active{% endblock %}
+
+{% block content %}
+
+<section class="hero hero--compact">
+  <h1 class="hero-title hero-title--sm">Prompt History</h1>
+  <p class="hero-sub">All previously generated prompts, newest first.</p>
+</section>
+
+<section class="history-section">
+  {% if page_obj.object_list %}
+
+    <div class="history-list">
+      {% for user_input in page_obj %}
+      <div class="history-item card">
+
+        <!-- Row 1: meta -->
+        <div class="history-meta">
+          <span class="badge badge--{{ user_input.category }}">{{ user_input.category|title }}</span>
+          {% if user_input.generated_prompt %}
+          <span class="badge badge--tone">{{ user_input.generated_prompt.tone|title }}</span>
+          <span class="history-conf">{{ user_input.generated_prompt.confidence_pct }}</span>
+          {% endif %}
+          <span class="history-date">{{ user_input.timestamp|date:"M j, Y · g:i a" }}</span>
+        </div>
+
+        <!-- Row 2: input -->
+        <p class="history-input">{{ user_input.input_text }}</p>
+
+        <!-- Row 3: generated prompt (collapsible) -->
+        {% if user_input.generated_prompt %}
+        <details class="history-prompt-detail">
+          <summary>View generated prompt</summary>
+          <div class="history-prompt-body">
+            {{ user_input.generated_prompt.prompt_text }}
+          </div>
+          {% if user_input.generated_prompt.feedback %}
+          <div class="history-feedback">
+            ⭐ {{ user_input.generated_prompt.feedback.rating }}/5
+            {% if user_input.generated_prompt.feedback.comment %}
+            &mdash; "{{ user_input.generated_prompt.feedback.comment }}"
+            {% endif %}
+          </div>
+          {% endif %}
+        </details>
+        {% endif %}
+
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← Previous</a>
+      {% endif %}
+      <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Next →</a>
+      {% endif %}
+    </div>
+
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No prompts yet</h3>
+      <p>Head back to the generator and create your first prompt!</p>
+      <a href="{% url 'generator:index' %}" class="btn-generate" style="text-decoration:none;display:inline-flex;">
+        Generate Now →
+      </a>
+    </div>
+  {% endif %}
+</section>
+
+{% endblock %}
