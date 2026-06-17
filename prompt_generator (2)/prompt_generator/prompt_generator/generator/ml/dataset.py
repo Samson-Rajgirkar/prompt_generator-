@@ -3,6 +3,7 @@ dataset.py – Sample dataset for training the intent/category classifier.
 
 Categories:
   - creative    : creative writing, storytelling, imagination
+  - fitness     : gym training, workout plans, strength, conditioning
   - technical   : coding, engineering, debugging, systems
   - analytical  : data analysis, research, reasoning, logic
   - educational : teaching, explaining, learning, tutoring
@@ -35,6 +36,28 @@ TRAINING_DATA = [
     ("write a children's bedtime story", "creative"),
     ("describe an alien landscape", "creative"),
     ("write a mystery story hook", "creative"),
+
+    # ── fitness ─────────────────────────────────────────────────────────────
+    ("build me a push pull legs workout plan", "fitness"),
+    ("create a gym routine for muscle gain", "fitness"),
+    ("give me a weekly workout split for a beginner", "fitness"),
+    ("design a strength training program for fat loss", "fitness"),
+    ("make a push pull workout split from monday to saturday", "fitness"),
+    ("help me improve my gym routine for hypertrophy", "fitness"),
+    ("plan a chest shoulders triceps workout", "fitness"),
+    ("plan a back biceps and legs training schedule", "fitness"),
+    ("create a home workout plan with dumbbells", "fitness"),
+    ("write a beginner gym program for a 20 year old", "fitness"),
+    ("suggest exercises for building lean muscle", "fitness"),
+    ("make a 6 day training split for strength and size", "fitness"),
+    ("design a bodybuilding program for a skinny beginner", "fitness"),
+    ("help me structure rest days in my workout routine", "fitness"),
+    ("write a progressive overload plan for the gym", "fitness"),
+    ("create a nutrition and training guide for gym progress", "fitness"),
+    ("build a workout plan for improving endurance and muscle", "fitness"),
+    ("make a gym trainer style plan for a beginner", "fitness"),
+    ("plan a balanced upper lower split for the week", "fitness"),
+    ("help me prepare a workout split for Monday to Saturday", "fitness"),
 
     # ── technical ───────────────────────────────────────────────────────────
     ("fix my Python function that returns wrong output", "technical"),

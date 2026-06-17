@@ -33,80 +33,53 @@ def _get_pipeline():
 # ---------------------------------------------------------------------------
 PROMPT_TEMPLATES: Dict[str, List[str]] = {
     "creative": [
-        "Act as a world-class creative writer. {action} Write with vivid imagery, "
-        "emotional depth, and a compelling narrative arc. Include sensory details "
-        "and make every word count.",
+        "You are a creative prompt specialist. Keep the user's topic and all key details intact. {action} Rewrite the request with originality, energy, and a motivating tone while staying focused on the subject matter.",
 
-        "You are an imaginative storyteller with decades of experience. {action} "
-        "Craft your response with originality, rich characters, and an unforgettable "
-        "voice that resonates with readers.",
+        "Act as a creative expert who knows how to make practical requests feel engaging. {action} Preserve the original meaning, but present it with fresh phrasing and a vivid, polished style.",
 
-        "Channel your inner author. {action} Focus on atmosphere, tension, and "
-        "character motivation. Your writing should be engaging from the first sentence.",
+        "You are an imaginative editor. {action} Keep the core topic front and center, then shape it into a more compelling, expressive prompt without losing the concrete details.",
+    ],
+    "fitness": [
+        "You are a certified gym trainer and strength coach. {action} Keep the user's goal, body details, and training schedule intact. Turn it into a clear, structured fitness prompt with exercises, sets, reps, rest, and progression.",
+
+        "Act as an expert bodybuilding and conditioning coach. {action} Preserve the request exactly, then organize it into a practical training plan that feels like advice from a professional gym trainer.",
+
+        "You are a fitness specialist. {action} Focus on the workout goal, training split, and recovery details. Give a precise, actionable gym-style prompt that stays centered on the user's original topic.",
     ],
     "technical": [
-        "You are a senior software engineer with deep expertise. {action} Provide "
-        "a clear, well-structured solution with code examples, edge case handling, "
-        "and best-practice recommendations. Explain your reasoning step by step.",
+        "You are a senior software engineer with deep expertise. {action} Preserve the user's exact technical goal and provide a clear, well-structured solution with code examples, edge case handling, and best-practice recommendations.",
 
-        "Act as a technical expert and architect. {action} Break down the problem "
-        "methodically, consider performance implications, and suggest scalable "
-        "approaches with concrete implementation details.",
+        "Act as a technical expert and architect. {action} Break down the problem methodically, consider performance implications, and suggest scalable approaches with concrete implementation details.",
 
-        "You are a staff engineer reviewing production code. {action} Provide "
-        "comprehensive guidance including potential pitfalls, testing strategies, "
-        "and industry-standard patterns.",
+        "You are a staff engineer reviewing production code. {action} Provide comprehensive guidance including potential pitfalls, testing strategies, and industry-standard patterns.",
     ],
     "analytical": [
-        "You are a data scientist and critical thinker. {action} Analyse the topic "
-        "systematically: identify key variables, examine evidence, consider "
-        "alternative explanations, and draw well-reasoned conclusions.",
+        "You are a data scientist and critical thinker. {action} Analyse the topic systematically: identify key variables, examine evidence, consider alternative explanations, and draw well-reasoned conclusions.",
 
-        "Act as a research analyst. {action} Structure your analysis with clear "
-        "sections: context, data interpretation, insights, and actionable "
-        "recommendations. Cite logical reasoning throughout.",
+        "Act as a research analyst. {action} Structure your analysis with clear sections: context, data interpretation, insights, and actionable recommendations. Cite logical reasoning throughout.",
 
-        "You are an expert in quantitative and qualitative analysis. {action} "
-        "Apply rigorous thinking, challenge assumptions, and present findings "
-        "in a clear, evidence-based manner.",
+        "You are an expert in quantitative and qualitative analysis. {action} Apply rigorous thinking, challenge assumptions, and present findings in a clear, evidence-based manner.",
     ],
     "educational": [
-        "You are an expert teacher who excels at making complex topics accessible. "
-        "{action} Use the Feynman technique: explain as if to a curious beginner, "
-        "use relatable analogies, and build understanding step by step.",
+        "You are an expert teacher who excels at making complex topics accessible. {action} Use the Feynman technique: explain as if to a curious beginner, use relatable analogies, and build understanding step by step.",
 
-        "Act as a patient and knowledgeable tutor. {action} Start with the "
-        "fundamentals, use concrete examples, and check understanding at each "
-        "stage. Anticipate common misconceptions.",
+        "Act as a patient and knowledgeable tutor. {action} Start with the fundamentals, use concrete examples, and check understanding at each stage. Anticipate common misconceptions.",
 
-        "You are an award-winning educator. {action} Make the content engaging "
-        "and memorable. Use stories, visual descriptions, and real-world "
-        "applications to illuminate the concept.",
+        "You are an award-winning educator. {action} Make the content engaging and memorable. Use stories, visual descriptions, and real-world applications to illuminate the concept.",
     ],
     "business": [
-        "You are a seasoned business strategist and consultant. {action} Provide "
-        "a professional, results-oriented response. Consider ROI, stakeholder "
-        "impact, and market dynamics. Be concise yet comprehensive.",
+        "You are a seasoned business strategist and consultant. {action} Provide a professional, results-oriented response. Consider ROI, stakeholder impact, and market dynamics. Be concise yet comprehensive.",
 
-        "Act as a C-suite executive advisor. {action} Frame your response around "
-        "business value, competitive advantage, and measurable outcomes. Use "
-        "industry-standard frameworks where appropriate.",
+        "Act as a C-suite executive advisor. {action} Frame your response around business value, competitive advantage, and measurable outcomes. Use industry-standard frameworks where appropriate.",
 
-        "You are a growth-focused entrepreneur with a proven track record. {action} "
-        "Provide actionable, data-driven guidance that balances ambition with "
-        "pragmatism. Include specific next steps.",
+        "You are a growth-focused entrepreneur with a proven track record. {action} Provide actionable, data-driven guidance that balances ambition with pragmatism. Include specific next steps.",
     ],
     "conversational": [
-        "You are a thoughtful, empathetic conversationalist. {action} Respond "
-        "warmly and authentically. Be helpful, honest, and personable—like advice "
-        "from a knowledgeable friend.",
+        "You are a thoughtful, empathetic conversationalist. {action} Respond warmly and authentically. Be helpful, honest, and personable like advice from a knowledgeable friend.",
 
-        "Act as a trusted advisor and good listener. {action} Consider the "
-        "human element, offer balanced perspectives, and personalise your "
-        "response to the context provided.",
+        "Act as a trusted advisor and good listener. {action} Consider the human element, offer balanced perspectives, and personalise your response to the context provided.",
 
-        "You are insightful and approachable. {action} Keep your tone natural "
-        "and engaging. Offer practical wisdom with a friendly, encouraging energy.",
+        "You are insightful and approachable. {action} Keep your tone natural and engaging. Offer practical wisdom with a friendly, encouraging energy.",
     ],
 }
 
@@ -147,9 +120,14 @@ INTENT_OVERRIDE_KEYWORDS: Dict[str, List[str]] = {
         "error", "exception", "traceback", "function", "code", "runtimeerror",
         "stack trace", "async", "django", "react",
     ],
+    "fitness": [
+        "gym", "workout", "fitness", "trainer", "training", "lifting",
+        "bodybuilding", "push pull", "push-pull", "muscle gain", "hypertrophy",
+        "strength", "conditioning", "reps", "sets", "rest day",
+    ],
     "educational": [
-        "routine", "diet", "nutrition", "workout", "exercise", "fitness",
-        "gain weight", "lose weight", "muscle", "protein", "calories",
+        "routine", "diet", "nutrition", "exercise", "gain weight", "lose weight",
+        "muscle", "protein", "calories",
         "meal plan", "training plan", "body weight", "kg", "health",
     ],
 }
@@ -159,8 +137,8 @@ def detect_intent_override(text: str) -> str | None:
     """Return a high-confidence category override for specific keyword groups."""
     text_lower = text.lower()
 
-    # Prioritize technical terms over general educational terms.
-    for category in ("technical", "educational"):
+    # Prioritize technical and fitness terms over more general educational terms.
+    for category in ("technical", "fitness", "educational"):
         keywords = INTENT_OVERRIDE_KEYWORDS.get(category, [])
         if any(keyword in text_lower for keyword in keywords):
             return category
@@ -236,7 +214,7 @@ class PredictionResult:
 # ---------------------------------------------------------------------------
 # Main classify function
 # ---------------------------------------------------------------------------
-def classify(text: str) -> PredictionResult:
+def classify(text: str, selected_category: str | None = None) -> PredictionResult:
     """
     Classify the user's text and return a PredictionResult.
 
@@ -261,13 +239,18 @@ def classify(text: str) -> PredictionResult:
     classes     = pipeline.classes_
     all_proba   = {cls: float(prob) for cls, prob in zip(classes, proba_array)}
 
-    # Rule-based override for known edge cases where statistical model can drift.
-    override_category = detect_intent_override(text)
-    if override_category is not None and override_category in all_proba:
-        category = override_category
-        confidence = max(float(all_proba[category]), 0.80)
+    # Respect an explicit category choice from the UI when provided.
+    if selected_category in PROMPT_TEMPLATES:
+        category = selected_category
+        confidence = 1.0
     else:
-        confidence = float(all_proba[category])
+        # Rule-based override for known edge cases where statistical model can drift.
+        override_category = detect_intent_override(text)
+        if override_category is not None and override_category in all_proba:
+            category = override_category
+            confidence = max(float(all_proba[category]), 0.80)
+        else:
+            confidence = float(all_proba[category])
 
     # ── Detect tone ─────────────────────────────────────────────────────────
     tone = detect_tone(text)

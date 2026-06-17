@@ -3,7 +3,7 @@
  *
  * Features:
  *   - Character counter for textarea
- *   - Hint pill auto-fill
+ *   - Category pill selection
  *   - Submit spinner
  *   - Probability bar animation (triggered on load)
  *   - Copy-to-clipboard for generated prompt
@@ -40,12 +40,27 @@ function initCharCounter() {
 /* ── Hint pills ───────────────────────────────────────────────────────────── */
 function initHintPills() {
   const textarea = $('#input-text');
+  const selectedCategory = $('#selected-category');
+  const pills = $$('.hint-pill');
   if (!textarea) return;
 
-  $$('.hint-pill').forEach(pill => {
+  const setActivePill = (pill) => {
+    pills.forEach(item => item.classList.toggle('is-selected', item === pill));
+  };
+
+  if (selectedCategory && selectedCategory.value) {
+    const active = pills.find(pill => pill.dataset.category === selectedCategory.value);
+    if (active) {
+      setActivePill(active);
+    }
+  }
+
+  pills.forEach(pill => {
     pill.addEventListener('click', () => {
-      textarea.value = pill.dataset.hint || '';
-      textarea.dispatchEvent(new Event('input')); // trigger counter
+      if (selectedCategory) {
+        selectedCategory.value = pill.dataset.category || '';
+      }
+      setActivePill(pill);
       textarea.focus();
     });
   });

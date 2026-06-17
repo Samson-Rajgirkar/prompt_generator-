@@ -16,6 +16,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # ---------------------------------------------------------------------------
 CATEGORY_CHOICES = [
     ('creative',       'Creative'),
+    ('fitness',        'Gym / Fitness'),
     ('technical',      'Technical'),
     ('analytical',     'Analytical'),
     ('educational',    'Educational'),

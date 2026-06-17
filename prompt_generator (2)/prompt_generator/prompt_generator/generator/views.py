@@ -42,10 +42,11 @@ def index(request):
 
         if form.is_valid():
             raw_text = form.cleaned_data['input_text']
+            selected_category = form.cleaned_data.get('selected_category') or None
 
             try:
                 # ── ML classification ────────────────────────────────────
-                prediction = classify(raw_text)
+                prediction = classify(raw_text, selected_category=selected_category)
 
                 # ── Persist to database ──────────────────────────────────
                 user_input = UserInput.objects.create(
@@ -143,6 +144,7 @@ def api_classify(request):
     try:
         body = json.loads(request.body)
         text = body.get('text', '').strip()
+        selected_category = body.get('selected_category') or None
     except (json.JSONDecodeError, AttributeError):
         return JsonResponse({'error': 'Invalid JSON body.'}, status=400)
 
@@ -150,7 +152,7 @@ def api_classify(request):
         return JsonResponse({'error': 'text field is required.'}, status=400)
 
     try:
-        prediction = classify(text)
+        prediction = classify(text, selected_category=selected_category)
     except Exception as exc:
         logger.exception("API classify error: %s", exc)
         return JsonResponse({'error': str(exc)}, status=500)

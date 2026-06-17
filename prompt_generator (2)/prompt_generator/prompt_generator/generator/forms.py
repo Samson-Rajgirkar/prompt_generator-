@@ -3,7 +3,8 @@ forms.py – Django forms for input validation.
 """
 
 from django import forms
-from .models import Feedback
+
+from .models import CATEGORY_CHOICES, Feedback
 
 
 class PromptInputForm(forms.Form):
@@ -25,6 +26,12 @@ class PromptInputForm(forms.Form):
             'min_length': 'Please enter at least 5 characters.',
             'max_length': 'Please keep your input under 1 000 characters.',
         },
+    )
+
+    selected_category = forms.ChoiceField(
+        choices=[('', 'Auto')] + CATEGORY_CHOICES,
+        required=False,
+        widget=forms.HiddenInput(attrs={'id': 'selected-category'}),
     )
 
 
