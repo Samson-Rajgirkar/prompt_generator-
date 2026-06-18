@@ -22,7 +22,7 @@ class PromptInputForm(forms.Form):
             'autofocus': True,
         }),
         error_messages={
-            'required':  'Please enter some text.',
+            'required':  'Please enter some text here',
             'min_length': 'Please enter at least 5 characters.',
             'max_length': 'Please keep your input under 1 000 characters.',
         },
